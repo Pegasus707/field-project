@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Fitness Tracker</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #F7F9FC;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #4A90E2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 15px;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+            outline: none;
+        }
+        nav a:hover, nav a:focus {
+            color: #B3E5FC;
+        }
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #4A90E2 0%, #D5E1DF 100%);
+            color: #fff;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .hero h1 {
+            margin: 0;
+            font-size: 3.5em;
+            font-weight: bold;
+        }
+        .hero p {
+            font-size: 1.6em;
+            margin: 20px 0;
+        }
+        .section {
+            padding: 30px 20px;
+            display: none;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .section.active {
+            display: block;
+        }
+        .login, .signup, .dashboard {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+        .login h2, .signup h2, .dashboard h2 {
+            margin-top: 0;
+            color: #4A90E2;
+        }
+        input[type="text"], input[type="password"], input[type="email"], input[type="submit"], select {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus {
+            border-color: #4A90E2;
+            outline: none;
+        }
+        .button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .button:hover, .button:focus {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #4A90E2;
+            margin-top: 40px;
+            font-size: 1.2em;
+            color: white;
+        }
+        .features, .testimonials {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .feature-item, .testimonial-item {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 10px;
+            width: 300px;
+            transition: transform 0.3s ease;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .feature-item:hover, .testimonial-item:hover {
+            transform: translateY(-10px);
+        }
+        .testimonial-item {
+            width: calc(33% - 40px);
+        }
+        .log-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .log-list li {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .log-list li button {
+            background-color: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        #mood-tracker {
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.8em;
+            }
+            .hero p {
+                font-size: 1.4em;
+            }
+            .login, .signup, .dashboard {
+                max-width: 90%;
+            }
+            .testimonial-item {
+                width: calc(100% - 40px);
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+       <nav>
+    <a href="#home" id="link-home">Home</a>
+    <a href="#login" id="link-login">Login</a>
+    <a href="#signup" id="link-signup">Sign Up</a>
+    <a href="#appointment" id="link-appointment">Appointment</a> <!-- Add appointment link -->
+    <a href="#dashboard" id="link-dashboard">Dashboard</a>
+</nav>
+
+    </header>
+
+    <div class="hero" id="hero">
+        <h1>Mental Fitness Tracker</h1>
+        <p>Your journey to better mental health starts here.</p>
+    </div>
+
+<!-- Appointment Section -->
+       <div class="section" id="appointment">
+        <div class="form-container">
+            <h2>Book an Appointment</h2>
+            <form id="appointment-form">
+    <label for="patient-name">Name:</label>
+    <input type="text" id="patient-name" required>
+
+    <label for="patient-email">Email:</label>
+    <input type="email" id="patient-email" required>
+
+    <label for="patient-phone">Phone:</label>
+    <input type="tel" id="patient-phone" required>
+
+    <label for="appointment-date">Date:</label>
+    <input type="date" id="appointment-date" required>
+
+    <label for="appointment-time">Time:</label>
+<select id="appointment-time" required>
+    <option value="13:00">1:00 PM</option>
+    <option value="18:00">6:00 PM</option>
+    <option value="20:00">8:00 PM</option>
+</select>
+    <label for="appointment-reason">Reason for Appointment:</label>
+    <select id="appointment-reason" required>
+        <option value="">--Please select a reason--</option>
+        <option value="Consultation">Consultation</option>
+        <option value="Follow-up">Follow-up</option>
+        <option value="Emergency">Emergency</option>
+        <option value="Check-up">Check-up</option>
+    </select>
+
+    <button type="submit">Book Appointment</button>
+</form>
+
+<p id="appointment-success"></p>
+
+            </form>
+        </div>
+    </div>
+
+<!-- Login Section -->
+<div class="section" id="login">
+    <div class="login">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="login-username" placeholder="Username" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <p class="error" id="login-error"></p>
+            <p class="success" id="login-success"></p>
+            <input type="submit" value="Login" class="button">
+        </form>
+        <p>Don't have an account? <a href="#signup" id="signup-link">Sign Up</a></p>
+    </div>
+</div>
+
+
+<!-- Signup Section -->
+<div class="section" id="signup">
+    <div class="signup">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+            <input type="text" id="signup-username" placeholder="Username" required>
+            <input type="email" id="signup-email" placeholder="Email" required>
+            <input type="password" id="signup-password" placeholder="Password" required>
+            <p class="error" id="signup-error"></p>
+            <p class="success" id="signup-success"></p>
+            <input type="submit" value="Sign Up" class="button">
+        </form>
+        <p>Already have an account? <a href="#login" id="login-link">Login</a></p>
+    </div>
+</div>
+
+
+    <div class="section" id="dashboard">
+        <div class="dashboard">
+            <h2>Welcome Back, <span id="username"></span>!</h2>
+            
+            <div class="mood-tracker" id="mood-tracker">
+                <h3>Track Your Mood</h3>
+                <form id="mood-form">
+                    <label for="question1">1. How do you feel today?</label>
+                    <select id="question1">
+                        <option value="1">Very Bad</option>
+                        <option value="2">Bad</option>
+                        <option value="3">Neutral</option>
+                        <option value="4">Good</option>
+                        <option value="5">Very Good</option>
+                    </select>
+
+                    <label for="question2">2. How stressed are you?</label>
+                    <select id="question2">
+                        <option value="1">Very Stressed</option>
+                        <option value="2">Stressed</option>
+                        <option value="3">Neutral</option>
+                        <option value="4">Relaxed</option>
+                        <option value="5">Very Relaxed</option>
+                    </select>
+
+                    <label for="question3">3. How much sleep did you get last night?</label>
+                    <select id="question3">
+                        <option value="1">Very Little</option>
+                        <option value="2">Little</option>
+                        <option value="3">Average</option>
+                        <option value="4">Good</option>
+                        <option value="5">Very Good</option>
+                    </select>
+
+                    <input type="submit" value="Submit Mood" class="button">
+                </form>
+            </div>
+
+            <div class="mood-log">
+                <h3>Mood Log</h3>
+                <ul class="log-list" id="mood-log-list">
+                    <!-- Mood log entries will be inserted here dynamically -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <h2>Features</h2>
+        <div class="feature-item">
+            <h3>Stress Monitoring</h3>
+            <p>Measures stress levels using physiological metrics like heart rate variability.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Mood Tracking</h3>
+            <p>Logs and analyzes emotions to identify patterns and triggers.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Mindfulness Reminders</h3>
+            <p>Sends prompts for mindfulness exercises to help maintain mental well-being.</p>
+        </div>
+    </div>
+
+    <div class="testimonials">
+        <h2>Testimonials</h2>
+        <div class="testimonial-item">
+            <h3>Empowering and Insightful</h3>
+            <p>"This app changed my life!" -Adam J</p>
+        </div>
+        <div class="testimonial-item">
+            <h3>A Must-Have for Mental Clarity</h3>
+            <p>"I feel much better since using this app." -Priya M</p>
+        </div>
+        <div class="testimonial-item">
+            <h3>My Go-To for Mental Well-Being</h3>
+            <p>"A great tool for tracking mental wellness." -Sam K</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Mental Fitness Tracker. All rights reserved.</p>
+    </footer>
+
+      <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Get references to all the sections, navigation links, and form
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('nav a');
+        const loginLink = document.getElementById('link-login');
+        const signupLink = document.getElementById('link-signup');
+        const appointmentLink = document.getElementById('link-appointment'); // Corrected link reference for appointment
+        const dashboardLink = document.getElementById('link-dashboard');
+
+        const showSection = (id) => {
+            // Hide all sections
+            sections.forEach(section => section.classList.remove('active'));
+            // Show the section corresponding to the clicked link
+            document.getElementById(id).classList.add('active');
+        };
+
+        // Navigation Links Handling
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1); // Get section ID from link href
+                showSection(targetId); // Show the corresponding section
+            });
+        });
+
+        // Form Section Links Handling
+        if (loginLink) {
+            loginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('login');
+            });
+        }
+
+        if (signupLink) {
+            signupLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('signup');
+            });
+        }
+
+        if (appointmentLink) {
+            appointmentLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('appointment');
+            });
+        }
+
+        if (dashboardLink) {
+            dashboardLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('dashboard');
+            });
+        }
+
+        // Appointment Form Submission Handling
+        const appointmentForm = document.getElementById("appointment-form");
+        const appointmentSuccess = document.getElementById("appointment-success");
+
+        appointmentForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            // Get values from the form inputs
+            const name = document.getElementById("patient-name").value;
+            const email = document.getElementById("patient-email").value;
+            const phone = document.getElementById("patient-phone").value;
+            const date = document.getElementById("appointment-date").value;
+            const time = document.getElementById("appointment-time").value;
+            const reason = document.getElementById("appointment-reason").value;
+
+            // Validate if all fields are filled
+            if (!name || !email || !phone || !date || !time || !reason) {
+                alert("Please fill in all fields.");
+                return;
+            }
+            
+             // Email validation regex
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    if (!email.match(emailRegex)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+            // If valid, show a success message
+            appointmentSuccess.textContent = `Appointment for ${name} successfully booked on ${date} at ${time}. Reason: ${reason}.`;
+        });
+    });
+    
+     // Mood Tracker Form Submission Handling
+    const moodForm = document.getElementById("mood-form");
+    const moodLogList = document.getElementById("mood-log-list");
+
+    moodForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission (which causes page reload)
+
+        // Get values from the mood tracking form
+        const mood = document.getElementById("question1").value;
+        const stress = document.getElementById("question2").value;
+        const sleep = document.getElementById("question3").value;
+
+        // Create a new list item with the mood information
+        const listItem = document.createElement("li");
+        listItem.innerHTML = `
+            <strong>Mood:</strong> ${mood}, <strong>Stress:</strong> ${stress}, <strong>Sleep:</strong> ${sleep}
+            <button onclick="deleteMoodLog(event)">Delete</button>
+        `;
+
+        // Append the new entry to the mood log
+        moodLogList.appendChild(listItem);
+        
+        // Clear the form after submission
+        moodForm.reset();
+    });
+
+    // Function to delete a mood log entry
+    window.deleteMoodLog = function (event) {
+        const listItem = event.target.closest("li");
+        moodLogList.removeChild(listItem);
+    };
+
+     // Frontend sign-up form submission
+     const signupForm = document.getElementById("signup-form");
+
+signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const username = document.getElementById("signup-username").value;
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+
+    // Make API call to backend
+    try {
+        const response = await fetch('http://localhost:5000/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password }),
+        });
+        const data = await response.json();
+        console.log(data.message);
+        if (response.ok) {
+            alert('Sign-up successful!');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (err) {
+        console.log(err);
+        alert('Something went wrong!');
+    }
+});
+
+const loginForm = document.getElementById("login-form");
+
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        try {
+            const response = await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            console.log(data.message);
+            if (response.ok) {
+                alert('Login successful!');
+                // Optionally, store token or redirect
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (err) {
+            console.log(err);
+            alert('Something went wrong!');
+        }
+    });
+
+    const moodLogForm = document.getElementById("mood-log-form");
+
+    moodLogForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const moodDescription = document.getElementById("mood-description").value;
+
+        try {
+            const response = await fetch('http://localhost:5000/api/mood-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ moodDescription }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert('Mood logged successfully!');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (err) {
+            console.log(err);
+            alert('Something went wrong!');
+        }
+    });
+
+    const appointmentForm = document.getElementById("appointment-form");
+
+appointmentForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const date = document.getElementById("appointment-date").value;
+    const time = document.getElementById("appointment-time").value;
+    const reason = document.getElementById("appointment-reason").value;
+
+    try {
+        const response = await fetch('http://localhost:5000/api/appointment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date, time, reason }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            alert('Appointment scheduled!');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (err) {
+        console.log(err);
+        alert('Something went wrong!');
+    }
+});
+</script>
+</body>
+</html>
