@@ -176,6 +176,19 @@
             color: red;
             font-size: 0.9em;
         }
+
+        /* Success Message */
+        #appointment-success {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -189,6 +202,8 @@
 </nav>
 
     </header>
+
+    <div id="appointment-success">Appointment successfully booked!</div> <!-- Success message section -->
 
     <div class="hero" id="hero">
         <h1>Mental Fitness Tracker</h1>
@@ -427,7 +442,20 @@
                 alert("Please fill in all fields.");
                 return;
             }
-            
+
+             // If all fields are filled, show success message
+             if (name && email && phone && date && time && reason) {
+                    appointmentSuccess.style.display = "block"; // Show success message
+                    setTimeout(() => {
+                        appointmentSuccess.style.display = "none"; // Hide message after 3 seconds
+                    }, 3000);
+
+                    // Reset the form fields
+                    appointmentForm.reset();
+                } else {
+                    alert("Please fill in all fields before booking an appointment.");
+                }
+        
              // Email validation regex
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     if (!email.match(emailRegex)) {
@@ -440,6 +468,7 @@
         });
     });
     
+
      // Mood Tracker Form Submission Handling
     const moodForm = document.getElementById("mood-form");
     const moodLogList = document.getElementById("mood-log-list");
@@ -507,14 +536,14 @@ const loginForm = document.getElementById("login-form");
     loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const email = document.getElementById("login-email").value;
+        const username = document.getElementById("login-username").value;
         const password = document.getElementById("login-password").value;
 
         try {
             const response = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username, password }),
             });
             const data = await response.json();
             console.log(data.message);
